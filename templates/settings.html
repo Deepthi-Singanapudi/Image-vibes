@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings - Image Vibes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 80px;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(52, 58, 64, 0.95);
+      color: white;
+      padding: 15px 30px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .navbar-brand img {
+      height: 35px;
+    }
+
+    .header-nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .header-nav a:hover {
+      color: #ffc107;
+    }
+
+    .settings-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #343a40;
+    }
+
+    .section-label {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      color: #495057;
+    }
+
+    footer {
+      background-color: rgba(52, 58, 64, 0.95);
+      color: white;
+      padding: 12px 0;
+      text-align: center;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="/" class="navbar-brand">
+      <img src="https://img.icons8.com/clouds/100/camera.png" alt="Logo" />
+      Image Vibes
+    </a>
+    <nav class="header-nav">
+      <a href="/"><i class="bi bi-house-door-fill"></i> Home</a>
+      <a href="/profile"><i class="bi bi-person-fill"></i> Profile</a>
+      <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </nav>
+  </header>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container mt-3">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main Settings Container -->
+  <div class="container settings-container">
+    <h2 class="form-title">Account Settings</h2>
+
+    <!-- Change Username Form -->
+    <div class="section-label">Change Username</div>
+    <form action="/update_username" method="POST">
+      <div class="mb-3">
+        <label for="newUsername" class="form-label">New Username</label>
+        <input type="text" class="form-control" id="newUsername" name="new_username" required>
+      </div>
+      <button type="submit" class="btn btn-dark w-100">Update Username</button>
+    </form>
+
+    <hr class="my-4">
+
+    <!-- Change Password Form -->
+    <div class="section-label">Change Password</div>
+    <form action="/update_password" method="POST">
+      <div class="mb-3">
+        <label for="currentPassword" class="form-label">Current Password</label>
+        <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+      </div>
+      <div class="mb-3">
+        <label for="newPassword" class="form-label">New Password</label>
+        <input type="password" class="form-control" id="newPassword" name="new_password" required>
+      </div>
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+      </div>
+      <button type="submit" class="btn btn-warning w-100">Update Password</button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Image Vibes. All rights reserved.
+  </footer>
+
+  <!-- Bootstrap JS (for dismissible alerts) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

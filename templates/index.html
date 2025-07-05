@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Image Caption & Music Recommendation</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      background-color: rgba(52, 58, 64, 0.85);
+      color: white;
+      padding: 15px 30px;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Hamburger icon on left */
+    #hamburger {
+      font-size: 1.8rem;
+      cursor: pointer;
+      user-select: none;
+      margin-right: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 25px;
+    }
+
+    #hamburger div {
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    /* Navbar brand */
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: white;
+      user-select: none;
+      margin-right: 30px;
+    }
+
+    .navbar-brand img {
+      height: 35px;
+      margin-right: 10px;
+    }
+
+    /* Right side nav + username */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      user-select: none;
+    }
+
+    nav.header-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav.header-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    nav.header-nav a:hover {
+      color: #ffc107;
+    }
+
+    #username-display {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px; /* hidden initially */
+      height: 100vh;
+      width: 250px;
+      background-color: rgba(52, 58, 64, 0.95);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding-top: 60px;
+      z-index: 100;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+      transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 15px 20px;
+      font-weight: 600;
+      border-left: 4px solid transparent;
+      transition: background-color 0.3s, border-left 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #495057;
+      border-left: 4px solid #ffc107;
+      color: #ffc107;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 15px;
+      position: relative;
+      z-index: 1;
+      margin-top: 60px; /* header height */
+    }
+
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1.title {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #343a40;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1.title img {
+      height: 50px;
+    }
+
+    footer {
+      background-color: rgba(52, 58, 64, 0.85);
+      color: white;
+      padding: 12px 0;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      user-select: none;
+    }
+
+    .about {
+      max-width: 800px;
+      margin-top: 50px;
+      padding: 0 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    .about h4 {
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #343a40;
+    }
+
+    .about p {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .btn-custom {
+      background-color: #343a40;
+      color: white;
+      border: none;
+    }
+    #hamburger {
+  margin-right: 15px;
+}
+
+.navbar-brand {
+  margin: 0;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <nav id="sidebar" class="sidebar" aria-label="Sidebar navigation">
+    <a href="/profile"><i class="bi bi-person-fill"></i> Profile</a>
+
+    <!--<a href="login.html"><i class="bi bi-box-arrow-left"></i> Logout</a>-->
+    <a href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-left"></i> Logout</a>
+
+  </nav>
+
+  <!-- Header -->
+  <header>
+  <div style="display: flex; align-items: center;">
+    <div id="hamburger" aria-label="Toggle sidebar" title="Toggle menu" role="button" tabindex="0">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="navbar-brand">
+      <img src="https://img.icons8.com/clouds/100/camera.png" alt="Logo" />
+      Image Vibes
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!--<nav class="header-nav" role="navigation" aria-label="Primary">
+      <a href="/"><i class="bi bi-house-door-fill"></i> Home</a>
+      <a href="/settings"><i class="bi bi-gear-fill"></i> Settings</a>
+
+    </nav>-->
+    <div id="username-display" aria-label="Logged in user">
+      Welcome, <span>{{ username }}</span>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Content -->
+  <div class="content">
+    <h1 class="title">
+      <img src="https://img.icons8.com/clouds/100/camera.png" alt="Logo" />
+      Image Vibes
+    </h1>
+
+    <div class="container">
+      <h2>Upload an Image</h2>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" class="form-control" required />
+        <button type="submit" class="btn btn-custom mt-3">Generate Caption &amp; Music</button>
+      </form>
+    </div>
+
+    <div class="about">
+  <h4>About Image Vibes</h4>
+  <p>
+    <strong>Image Vibes</strong> is a creative AI-powered platform that transforms your images into emotional experiences.
+    With a single image upload, you’ll receive a personalized caption and a curated music recommendation that matches
+    the tone, emotion, or context of the photo.
+  </p>
+  <p>
+    Whether you're a social media creator, a digital storyteller, or simply someone who loves sharing meaningful content,
+    Image Vibes helps you tell a story that resonates. It's more than just captions — it's the harmony of sight and sound.
+  </p>
+
+  <h4 style="margin-top: 25px; font-weight: 600;">How It Works:</h4>
+  <ul style="text-align: left; margin-top: 15px; line-height: 1.8;">
+    <li><strong>1. Upload an Image:</strong> Start by selecting any image from your device that you’d like to caption.</li>
+    <li><strong>2. AI Caption Generation:</strong> Our intelligent caption generator analyzes the image and creates a catchy, Instagram-ready caption based on its content and emotion.</li>
+    <li><strong>3. Mood-Based Music:</strong> We use AI to detect the mood of your image and recommend a piece of music that complements the vibe perfectly.</li>
+    <li><strong>4. Share Your Vibes:</strong> Download or copy the caption and play the matching song — ready to post, share, or save.</li>
+  </ul>
+
+  <p style="margin-top: 20px;">
+    It’s more than just AI — it's about helping you express your moments in the most meaningful way. Turn photos into feelings with <strong>Image Vibes</strong>.
+  </p>
+</div>
+
+  </div>
+
+  <footer>
+    &copy; 2025 Image Vibes. All rights reserved.
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('active');
+    }
+
+    hamburger.addEventListener('click', toggleSidebar);
+
+    // Accessibility: allow Enter and Space to toggle sidebar
+    hamburger.addEventListener('keydown', function(e) {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function(event) {
+      const isClickInsideSidebar = sidebar.contains(event.target);
+      const isClickOnHamburger = hamburger.contains(event.target);
+
+      if (!isClickInsideSidebar && !isClickOnHamburger && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "b2b400d628ecc56c6089857b9258b47c"
+API_KEY = #create your api key using last.fm 
 
 def recommend_music(mood):
     url = f"http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag={mood}&api_key={API_KEY}&format=json"
